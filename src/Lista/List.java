@@ -1,5 +1,4 @@
 package Lista;
-
 public class List {
     private Node ini, fim;
     int TL;
@@ -7,12 +6,10 @@ public class List {
     public List() {
         TL = 0;
     }
-
     public void inicialise(){
         ini = fim = null;
         TL = 0;
     }
-
     public void insert(int info){
         Node nodo = new Node(info);
         if(ini == null){
@@ -25,7 +22,6 @@ public class List {
         }
         TL++;
     }
-
     public void exibi(){
         Node aux = ini;
         while (aux != null){
@@ -35,8 +31,14 @@ public class List {
                 System.out.print(" - ");
         }
     }
-
+    private Node posiciona(int pos){
+        Node aux = ini;
+        for(int i=0; aux!=null && i<pos;i++ )
+            aux = aux.getProx();
+        return aux;
+    }
     //Algoritimos de Ordenação
+
     public void insercao_Direta(){
         Node pi = ini.getProx(), pos;
         int aux;
@@ -51,6 +53,35 @@ public class List {
             }
             pos.setInfo(aux);
             pi = pi.getProx();
+        }
+    }
+
+    private Node busca_Binaria(int chave, int tl){
+        int ini = 0, fim = tl-1, meio = fim/2;
+        while(ini < fim && chave != posiciona(meio).getInfo()){
+            if(chave > posiciona(meio).getInfo())
+                ini = meio + 1;
+            else
+                fim = meio - 1;
+            meio = (ini+fim)/2;
+        }
+        if(chave > posiciona(meio).getInfo())
+            return posiciona(meio).getProx();
+        return posiciona(meio);
+    }
+
+    public void insercao_Binaria(){
+        int aux;
+        Node pnt, pos;
+
+        pnt = ini;
+        for(int i = 1; i<TL; i++){
+            aux = pnt.getInfo();
+            pos = busca_Binaria(aux, i);
+            for(Node j=pnt; j!=pos; j=j.getAnt())
+                j.setInfo(j.getAnt().getInfo());
+            pos.setInfo(aux);
+            pnt = pnt.getProx();
         }
     }
 
@@ -128,25 +159,113 @@ public class List {
 
         while(dist>0){
             for (int i = dist;i<TL;i++){
-                p = ini;
-                for (pos = i;pos > 0; pos--){
-                    p = p.getProx();
-                }
+                p = posiciona(i);
                 aux = p.getInfo();
-                p2 = p;
-                for (pos = dist;p2 != null && pos > 0; pos--){
-                    p2 = p2.getAnt();
-                }
+                pos = i - dist;
+                p2 = posiciona(pos);
                 while(p != ini && p2.getInfo()>aux){
                     p.setInfo(p2.getInfo());
                     p = p2;
-                    for (pos = dist;p2 != null && pos > 0; pos--){
-                        p2 = p2.getAnt();
-                    }
+                    pos = pos - dist;
+                    p2 = posiciona(pos);
                 }
                 p.setInfo(aux);
             }
             dist = dist/3;
         }
+    }
+
+    public void Heap_Sort(){
+        int tl, pos, aux;
+        Node f1, f2, pai, maiorF;
+
+        for (tl = TL; tl>1;tl--){
+            exibi();
+            System.out.println();
+            pos = tl/2-1;
+            pai = posiciona(pos);
+            while (pai != null){
+                f1 = posiciona(pos*2+1);
+                f2 = f1.getProx();
+                maiorF = f1;
+                Node comp = posiciona(tl);
+                if(f2 != comp && f1.getInfo() < f2.getInfo())
+                    maiorF = f2;
+                if (maiorF.getInfo() > pai.getInfo()) {
+                    aux = maiorF.getInfo();
+                    maiorF.setInfo(pai.getInfo());
+                    pai.setInfo(aux);
+                }
+                pai = pai.getAnt();
+                pos--;
+            }
+            aux = ini.getInfo();
+            pai = posiciona(tl-1);
+            ini.setInfo(pai.getInfo());
+            pai.setInfo(aux);
+        }
+    }
+
+    public void QuicksemPivo(){
+        QuickSP(0,TL-1);
+    }
+
+    public void QuickscomPivo(){
+        QuickCP(0,TL-1);
+    }
+
+    private void QuickSP(int inicio, int fim){
+        int i = inicio, j = fim, aux;
+        boolean flag = true;
+        Node pi = posiciona(i), pj = posiciona(j);
+
+        while (i<j){
+            if(flag)
+                while (i<j && pi.getInfo() <= pj.getInfo()) {
+                    i++;
+                    pi = pi.getProx();
+                }
+            else
+                while (i<j && pi.getInfo() <= pj.getInfo()) {
+                    j--;
+                    pj = pj.getAnt();
+                }
+            aux = pi.getInfo();
+            pi.setInfo(pj.getInfo());
+            pj.setInfo(aux);
+            flag = !flag;
+        }
+        if (inicio < i-1)
+            QuickSP(inicio, i-1);
+        if (j+1 < fim)
+            QuickSP(j+1,fim);
+    }
+
+    private void QuickCP(int inicio, int fim){
+        int i = inicio, j = fim, aux, pivo;
+        boolean flag = true;
+        Node pi = posiciona(i), pj = posiciona(j);
+
+        pivo = posiciona((i+j)/2).getInfo();
+        while (i<j){
+            while (i<j && pi.getInfo() <= pivo) {
+                i++;
+                pi = pi.getProx();
+            }
+            aux = pi.getInfo();
+            pi.setInfo(pivo);
+            posiciona((i+j)/2).setInfo(aux);
+            while (i<j && pivo <= pj.getInfo()) {
+                j--;
+                pj = pj.getAnt();
+            }
+            aux = pj.getInfo();
+            pj.setInfo(pivo);
+            posiciona((i+j)/2).setInfo(aux);
+        }
+        if (inicio < i-1)
+            QuickCP(inicio, i-1);
+        if (j+1 < fim)
+            QuickCP(j+1,fim);
     }
 }
