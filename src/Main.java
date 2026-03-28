@@ -11,7 +11,7 @@ public class Main {
         L.insert(2);
         L.insert(7);
 
-        L.QuickscomPivo();
+        L.Counting_Sort();
 
         L.exibi();
     }

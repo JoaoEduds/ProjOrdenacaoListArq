@@ -37,8 +37,8 @@ public class List {
             aux = aux.getProx();
         return aux;
     }
-    //Algoritimos de Ordenação
 
+    //Algoritimos de Ordenação
     public void insercao_Direta(){
         Node pi = ini.getProx(), pos;
         int aux;
@@ -210,7 +210,7 @@ public class List {
         QuickSP(0,TL-1);
     }
 
-    public void QuickscomPivo(){
+    public void QuickcomPivo(){
         QuickCP(0,TL-1);
     }
 
@@ -243,29 +243,72 @@ public class List {
 
     private void QuickCP(int inicio, int fim){
         int i = inicio, j = fim, aux, pivo;
-        boolean flag = true;
         Node pi = posiciona(i), pj = posiciona(j);
-
         pivo = posiciona((i+j)/2).getInfo();
-        while (i<j){
-            while (i<j && pi.getInfo() <= pivo) {
+
+        while (i<=j){
+            while (i<=j && pi.getInfo() < pivo) {
                 i++;
                 pi = pi.getProx();
             }
-            aux = pi.getInfo();
-            pi.setInfo(pivo);
-            posiciona((i+j)/2).setInfo(aux);
-            while (i<j && pivo <= pj.getInfo()) {
+            while (i<=j && pivo < pj.getInfo()) {
                 j--;
                 pj = pj.getAnt();
             }
-            aux = pj.getInfo();
-            pj.setInfo(pivo);
-            posiciona((i+j)/2).setInfo(aux);
+            if (i<=j){
+                aux = pi.getInfo();
+                pi.setInfo(pj.getInfo());
+                pj.setInfo(aux);
+                i++;
+                j--;
+                if (pi!=null)
+                    pi = pi.getProx();
+                if (pj!=null)
+                    pj = pj.getAnt();
+            }
+
         }
-        if (inicio < i-1)
-            QuickCP(inicio, i-1);
-        if (j+1 < fim)
-            QuickCP(j+1,fim);
+        if (inicio < j)
+            QuickCP(inicio, j);
+        if (i < fim)
+            QuickCP(i,fim);
     }
+
+    public void Counting_Sort(){
+        int maior;
+        Node aux = ini;
+        maior = aux.getInfo();
+        while (aux != null){
+            if(maior < aux.getInfo())
+                maior = aux.getInfo();
+            aux = aux.getProx();
+        }
+        int[] vetCont = new int[++maior];
+        int[] vetFim = new int[TL];
+
+        aux = ini;
+        while(aux != null){
+            vetCont[aux.getInfo()]++;
+            aux = aux.getProx();
+        }
+        for (int i = 1; i < maior; i++){
+            vetCont[i] += vetCont[i-1];
+        }
+        aux = fim;
+        while (aux.getAnt() != null){
+            vetFim[--vetCont[aux.getInfo()]] = aux.getInfo();
+
+            aux = aux.getAnt();
+        }
+        vetFim[--vetCont[aux.getInfo()]] = aux.getInfo();
+        for (int i=0;i<TL;i++){
+            aux.setInfo(vetFim[i]);
+            aux = aux.getProx();
+        }
+    }
+
+    public void Bucket_Sort(){
+
+    }
+
 }
