@@ -10,8 +10,11 @@ public class Main {
         L.insert(9);
         L.insert(2);
         L.insert(7);
+        L.insert(8);
+        L.insert(1);
 
-        L.Counting_Sort();
+
+        L.Merge_Sort2();
 
         L.exibi();
     }
