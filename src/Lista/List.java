@@ -73,7 +73,7 @@ public class List {
         int aux;
         Node pnt, pos;
 
-        pnt = ini;
+        pnt = ini.getProx();
         for(int i = 1; i<TL; i++){
             aux = pnt.getInfo();
             pos = busca_Binaria(aux, i);
