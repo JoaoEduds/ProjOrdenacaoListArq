@@ -7,5 +7,7 @@ public class Main {
         arq.geraArquivoRandomico();
         arq.shake();
         arq.exibirArquivo();
+        System.out.println(Arquivo.gerarTabela());
+
     }
 }
